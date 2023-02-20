@@ -113,7 +113,7 @@ async function convertMolfileToInchiAndWriteResults(molfile, options, inchiVersi
   }
 
   if ((inchiResult.return_code != -1) && (inchiResult.inchi != "")) {
-    const inchikeyResult;
+    let inchikeyResult;
     try {
       inchikeyResult = await inchikeyFromInchi(inchiResult.inchi, inchiVersion);
     } catch(e) {
