@@ -99,7 +99,7 @@ jobs:
         with:
           node-version: 19
           cache: 'yarn'
-          cache-dependency-path: '$GITHUB_WORKSPACE/InChI-Web-Demo/ketcher/react-app/yarn.lock'
+          cache-dependency-path: '${ GITHUB_WORKSPACE }/InChI-Web-Demo/ketcher/react-app/yarn.lock'
 
       - name: Verify Node.js version
         run: |
