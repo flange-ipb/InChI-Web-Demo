@@ -18,6 +18,9 @@ jobs:
   test_and_deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Install dos2unix
+        run: |
+          sudo apt-get -y install dos2unix
       - name: Setup emsdk
         uses: mymindstorm/setup-emsdk@v12
         with:
