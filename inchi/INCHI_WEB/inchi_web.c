@@ -90,9 +90,7 @@ char* inchi_from_molfile(char *molfile, char *options) {
   FreeINCHI(output);
   free(output);
 
-  /*
-   * Potential memory leak: Will the caller (emscripten) free this string?
-   */
+  // Caller should free this.
   return json;
 }
 

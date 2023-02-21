@@ -59,16 +59,27 @@ function addInchiOptions(divId, updateFunction) {
 
 /*
  * Glue code to invoke the C functions in inchi_web.c
+ *
+ * Char pointers returned by inchi_from_molfile and inchikey_from_inchi need to be
+ * freed here.
+ * See https://github.com/emscripten-core/emscripten/issues/6484 (emscripten does
+ * not do this on its own when using "string" as return type)
  */
 async function inchiFromMolfile(molfile, options, inchiVersion) {
   const module = await inchiModulePromises[inchiVersion];
-  const result = module.ccall("inchi_from_molfile", "string", ["string", "string"], [molfile, options]);
+  const ptr = module.ccall("inchi_from_molfile", "number", ["string", "string"], [molfile, options]);
+  const result = module.UTF8ToString(ptr);
+  module._free(ptr);
+
   return JSON.parse(result);
 }
 
 async function inchikeyFromInchi(inchi, inchiVersion) {
   const module = await inchiModulePromises[inchiVersion];
-  const result = module.ccall("inchikey_from_inchi", "string", ["string"], [inchi]);
+  const ptr = module.ccall("inchikey_from_inchi", "number", ["string"], [inchi]);
+  const result = module.UTF8ToString(ptr);
+  module._free(ptr)
+
   return JSON.parse(result);
 }
 
