@@ -111,9 +111,23 @@ jobs:
           cd $GITHUB_WORKSPACE/InChI-Web-Demo/ketcher/react-app
           yarn install --frozen-lockfile
           yarn run build
-      
+
       #
-      # GItHub pages deployment
+      # Bootstrap
+      #
+      - name: Download Bootstrap
+        run: |
+          cd $GITHUB_WORKSPACE
+          mkdir bootstrap
+          cd bootstrap
+          wget https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css
+          wget https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css.map
+          wget https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css
+          wget https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js
+          wget https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js.map
+
+      #
+      # GitHub pages deployment
       #
       - name: Collect artifacts for deployment
         run: |
@@ -124,6 +138,7 @@ jobs:
           cp $GITHUB_WORKSPACE/InChI_1_06/INCHI-1-SRC/INCHI_WEB/inchi-web106.* inchi
           mkdir ketcher
           cp -R $GITHUB_WORKSPACE/InChI-Web-Demo/ketcher/react-app/build/* ketcher
+          cp -R $GITHUB_WORKSPACE/bootstrap .
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
