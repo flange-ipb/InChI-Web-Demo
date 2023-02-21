@@ -13,7 +13,9 @@ const inchiModulePromises = {
 const availableInchiVersions = Object.keys(inchiModulePromises);
 
 /*
- * Initialization of user-selectable parameters
+ * Page loaded:
+ * - initialize user-selectable parameters
+ * - enable tooltips
  */
 function onBodyLoad() {
   addInchiVersionsToSelect("tab1-inchiversion");
@@ -21,6 +23,8 @@ function onBodyLoad() {
 
   addInchiVersionsToSelect("tab2-inchiversion");
   addInchiOptions("tab2-options", () => updateTab2());
+
+  enableTooltips();
 }
 
 function addInchiVersionsToSelect(selectId) {
@@ -32,29 +36,51 @@ function addInchiVersionsToSelect(selectId) {
   });
 }
 
-const inchiOptions = ["NEWPSOFF", "DoNotAddH", "SNon", "SRel", "SRac", "SUCF", "SUU", "SLUUD", "FixedH", "RecMet", "KET", "15T"];
+// Tooltip texts are from InChI's API reference.
+const inchiOptions = [
+  { name: "NEWPSOFF", tooltip: "Both ends of wedge point to stereocenters" },
+  { name: "DoNotAddH", tooltip: "All hydrogens in input structure are explicit" },
+  { name: "SNon", tooltip: "Ignore stereo" },
+  { name: "SRel", tooltip: "Use relative stereo" },
+  { name: "SRac", tooltip: "Use racemic stereo" },
+  { name: "SUCF", tooltip: "Use Chiral Flag in MOL/SD file record: if On – use Absolute stereo, Off – use Relative stereo" },
+  { name: "SUU", tooltip: "Always indicate unknown/undefined stereo" },
+  { name: "SLUUD", tooltip: "Stereo labels for \“unknown\” and \“undefined\” are different, ‘u’ and ‘?’, resp." },
+  { name: "FixedH", tooltip: "Include reconnected metals results" },
+  { name: "RecMet", tooltip: "Include Fixed H layer" },
+  { name: "KET", tooltip: "Account for keto-enol tautomerism (experimental; extension to InChI 1)" },
+  { name: "15T", tooltip: "Account for 1,5-tautomerism (experimental; extension to InChI 1)" }
+];
 
 function addInchiOptions(divId, updateFunction) {
-  inchiOptions.forEach(opt => {
+  inchiOptions.forEach(option => {
     const div = document.createElement("div");
     div.classList.add("form-check", "mb-2");
 
     const input = document.createElement("input");
-    input.id = divId + "-" + opt;
+    input.id = divId + "-" + option["name"];
     input.classList.add("form-check-input");
     input.type = "checkbox";
-    input.value = opt;
+    input.value = option["name"];
     input.addEventListener("change", updateFunction);
 
     const label = document.createElement("label");
     label.classList.add("form-check-label");
     label.htmlFor = input.id;
-    label.innerHTML = opt;
+    label.innerHTML = option["name"];
+    label.setAttribute("data-bs-toggle", "tooltip");
+    label.setAttribute("data-bs-title", option["tooltip"]);
+    label.setAttribute("data-bs-placement", "right");
 
     div.appendChild(input);
     div.appendChild(label);
     document.getElementById(divId).appendChild(div);
   });
+}
+
+function enableTooltips() {
+  // https://getbootstrap.com/docs/5.3/components/tooltips/#enable-tooltips
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(elem => new bootstrap.Tooltip(elem));
 }
 
 /*
