@@ -1,4 +1,3 @@
-/* #define _GNU_SOURCE // https://stackoverflow.com/a/61306222 */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -16,25 +15,6 @@
  * What happens when malloc aborts? We can catch a JS exception.
  * See https://github.com/emscripten-core/emscripten/issues/9715
  */
-
-/*
- * A (too) simple C version of to_json.
- * TODO: Escape strings to make sure we always have valid JSON. YAY!!!!! ;(
- */
-/*char* to_json(int return_code, char *inchi, char *auxinfo, char *message) {
-  char *json;
-
-  if (asprintf(&json,
-               "{\"return_code\":\"%i\",\"inchi\":\"%s\",\"auxinfo\":\"%s\",\"message\":\"%s\"}",
-               return_code,
-               inchi,
-               auxinfo,
-               message) < 0) {
-    return NULL;
-  }
-
-  return json;
-}*/
 
 /*
  * Safe way to serialize to JSON.
