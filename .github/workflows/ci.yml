@@ -24,10 +24,6 @@ jobs:
       #
       # Compile INCHI_EXE and run the test suite
       #
-      - name: Install dos2unix
-        run: |
-          sudo apt-get -y install dos2unix
-
       - name: Setup emsdk
         uses: mymindstorm/setup-emsdk@v12
         with:
@@ -70,7 +66,6 @@ jobs:
           cd $GITHUB_WORKSPACE/InChI_1_06/INCHI-1-TEST/test
           unzip test-datasets.zip -d test-datasets
           unzip test-results.zip -d expected-test-results
-          find expected-test-results/ -type f -exec dos2unix {} \;
           cp $GITHUB_WORKSPACE/InChI-Web-Demo/inchi/INCHI-1-TEST/inchify_*.sh .
 
       - name: Run InChI_1_06's tests and compare test results with expected results
@@ -78,7 +73,7 @@ jobs:
           cd $GITHUB_WORKSPACE/InChI_1_06/INCHI-1-TEST/test
           ./inchify_InChI_TestSet.sh "node ../../INCHI-1-SRC/INCHI_EXE/bin/wasm/inchi-1.js" test-datasets test-results test-logs
           ./inchify_zzp.sh "node ../../INCHI-1-SRC/INCHI_EXE/bin/wasm/inchi-1.js" test-datasets test-results test-logs
-          diff -q test-results/ expected-test-results/ && echo "Tests are OK!"
+          diff -q --strip-trailing-cr test-results/ expected-test-results/ && echo "Tests are OK!"
 
       #
       # Build InChI WASM module
