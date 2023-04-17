@@ -21,7 +21,7 @@ endif
 P_INCL = -I$(P_BASE)
 C_COMPILER_OPTIONS = $(P_INCL) -ansi -DCOMPILE_ANSI_ONLY -DTARGET_EXE_STANDALONE -O3 -c
 
-EXPORTED_FUNCTIONS = _inchi_from_molfile,_inchikey_from_inchi,_malloc,_free
+EXPORTED_FUNCTIONS = _inchi_from_molfile,_inchikey_from_inchi,_molfile_from_inchi,_malloc,_free
 EXPORTED_RUNTIME_METHODS = ccall,cwrap,UTF8ToString,stringToUTF8,lengthBytesUTF8
 LINKER_OPTIONS = -sEXPORTED_FUNCTIONS=$(EXPORTED_FUNCTIONS) -sEXPORTED_RUNTIME_METHODS=$(EXPORTED_RUNTIME_METHODS) -sEXPORT_NAME=$(MODULE_NAME) -sMODULARIZE -sENVIRONMENT=web -sSTACK_SIZE=1048576
 # TODO:
@@ -76,10 +76,10 @@ $(P_BASE)/mol2atom.c	\
 $(P_API)/ichilnct.c	\
 $(P_API)/inchi_dll.c	\
 $(P_API)/inchi_dll_a.c	\
+$(P_API)/inchi_dll_a2.c	\
 $(P_API)/inchi_dll_b.c	\
 $(P_API)/inchi_dll_main.c	\
 inchi_web.c
-# not including $(P_API)/inchi_dll_a2.c due to duplicate symbols
 
 INCHI_OBJS = ichi_bns.o	\
 ichi_io.o	\
@@ -129,15 +129,15 @@ util.o	\
 ichilnct.o	\
 inchi_dll.o	\
 inchi_dll_a.o	\
+inchi_dll_a2.o	\
 inchi_dll_b.o	\
 inchi_dll_main.o	\
 inchi_web.o
-# not including inchi_dll_a2.o due to duplicate symbols
 
 $(INCHI_WEB_JS): $(INCHI_OBJS)
 	$(LINKER) $(LINKER_OPTIONS) -o $(INCHI_WEB_JS) $(INCHI_OBJS) -lm
 %.o: $(P_BASE)/%.c
-	$(C_COMPILER) $(C_COMPILER_OPTIONS) $<
+	$(C_COMPILER) $(C_COMPILER_OPTIONS) -DTARGET_API_LIB $<
 %.o: $(P_API)/%.c
 	$(C_COMPILER) $(C_COMPILER_OPTIONS) -DTARGET_API_LIB $<
 %.o: %.c

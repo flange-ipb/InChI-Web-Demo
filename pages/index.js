@@ -109,6 +109,15 @@ async function inchikeyFromInchi(inchi, inchiVersion) {
   return JSON.parse(result);
 }
 
+async function molfileFromInchi(inchi, options, inchiVersion) {
+  const module = await inchiModulePromises[inchiVersion];
+  const ptr = module.ccall("molfile_from_inchi", "number", ["string", "string"], [inchi, options]);
+  const result = module.UTF8ToString(ptr);
+  module._free(ptr);
+
+  return JSON.parse(result);
+}
+
 /*
  * Update actions (when user changes inputs)
  */
