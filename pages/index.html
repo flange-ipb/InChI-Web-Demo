@@ -23,6 +23,9 @@
         <li class="nav-item" role="presentation">
           <button class="nav-link" id="tab2" data-bs-toggle="tab" data-bs-target="#tab2-pane" type="button" role="tab" aria-controls="tab2-pane" aria-selected="false">Convert Molfile to InChI</button>
         </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab3" data-bs-toggle="tab" data-bs-target="#tab3-pane" type="button" role="tab" aria-controls="tab3-pane" aria-selected="false">Convert InChI to structure</button>
+        </li>
       </ul>
 
       <div class="tab-content">
@@ -31,7 +34,7 @@
           <div class="row mt-1">
             <div class="col-lg-8">
               <div class="ratio" style="--bs-aspect-ratio:62%;min-height:450px;">
-                <iframe id="ketcher" class="w-100" src="ketcher/index.html" onload="onKetcherLoaded()"></iframe>
+                <iframe id="tab1-ketcher" class="w-100" src="ketcher/index.html" onload="onKetcherLoaded('tab1-ketcher', () => updateTab1())"></iframe>
               </div>
             </div>
             <div class="col-lg-4 mt-auto">
@@ -73,7 +76,7 @@
             <div class="col-lg-8">
               <div class="ratio" style="--bs-aspect-ratio:62%;min-height:450px;">
                 <div class="w-100">
-                  <textarea id="molfileTextarea" class="form-control pe-5 h-100" style="resize:none;" placeholder="Paste or drag-and-drop a Molfile here" ondragover="onTextareaDragover(event)" ondrop="onMolfileTextareaDrop(event)" oninput="updateTab2()"></textarea>
+                  <textarea id="tab2-molfileTextarea" class="form-control pe-5 h-100" style="resize:none;" placeholder="Paste or drag-and-drop a Molfile here" ondragover="onTextareaDragover(event)" ondrop="onMolfileTextareaDrop(event)" oninput="updateTab2()"></textarea>
                   <button class="btn btn-outline-secondary border-0" style="position:absolute;top:10px;right:10px;" onclick="document.getElementById('molfileTextarea').value = '';updateTab2()"><i class="bi bi-trash"></i></button>
                 </div>
               </div>
@@ -109,6 +112,37 @@
               <small class="font-monospace">Warnings/Errors</small>
             </div>
             <pre id="tab2-logs" class="py-1 px-3 mb-0" style="white-space:pre-wrap;"></pre>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab3-pane" role="tabpanel" aria-labelledby="tab3" tabindex="0">
+          <div class="row mt-1">
+            <div class="col-lg-8">
+              <div class="ratio" style="height:100px;">
+                <div class="w-100">
+                  <textarea id="tab3-inchiTextarea" class="form-control pe-5 h-100" style="resize:none;" placeholder="Paste an InChI here" oninput="updateTab3()"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 mt-auto">
+              <div class="mt-2">
+                <label class="form-check-label mb-2" for="tab2-inchiversion">Select InChI version</label>
+                <select id="tab3-inchiversion" class="form-select" onchange="updateTab3()"></select>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-1">
+            <div class="col-lg-8">
+              <div class="ratio" style="--bs-aspect-ratio:62%;min-height:450px;">
+                <iframe id="tab3-ketcher" class="w-100" src="ketcher/index.html"></iframe>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2 border rounded bg-light" style="--bs-bg-opacity:.3;">
+            <div class="border-bottom py-1 px-3">
+              <small class="font-monospace">Warnings/Errors</small>
+            </div>
+            <pre id="tab3-logs" class="py-1 px-3 mb-0" style="white-space:pre-wrap;"></pre>
           </div>
         </div>
 

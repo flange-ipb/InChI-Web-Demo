@@ -24,6 +24,8 @@ function onBodyLoad() {
   addInchiVersionsToSelect("tab2-inchiversion");
   addInchiOptions("tab2-options", () => updateTab2());
 
+  addInchiVersionsToSelect("tab3-inchiversion");
+
   enableTooltips();
 }
 
@@ -122,7 +124,7 @@ async function molfileFromInchi(inchi, options, inchiVersion) {
  * Update actions (when user changes inputs)
  */
 async function updateTab1() {
-  const molfile = await getKetcher().getMolfile();
+  const molfile = await getKetcher("tab1-ketcher").getMolfile();
   const options = collectOptions("tab1-options");
   const inchiVersion = document.getElementById("tab1-inchiversion").value;
 
@@ -130,7 +132,7 @@ async function updateTab1() {
 }
 
 async function updateTab2() {
-  const molfile = document.getElementById("molfileTextarea").value;
+  const molfile = document.getElementById("tab2-molfileTextarea").value;
   const options = collectOptions("tab2-options");
   const inchiVersion = document.getElementById("tab2-inchiversion").value;
 
@@ -188,21 +190,50 @@ function writeResult(text, id) {
   document.getElementById(id).innerHTML = text;
 }
 
+async function updateTab3() {
+  const inchi = document.getElementById("tab3-inchiTextarea").value;
+  const inchiVersion = document.getElementById("tab3-inchiversion").value;
+  const ketcher = getKetcher("tab3-ketcher");
+  const logTextElementId = "tab3-logs";
+
+  ketcher.editor.clear()
+  writeResult("", logTextElementId);
+
+  let molfileResult;
+  try {
+    molfileResult = await molfileFromInchi(inchi, "", inchiVersion);
+  } catch(e) {
+    writeResult(e, logTextElementId);
+    return;
+  }
+  const molfile = molfileResult.molfile;
+  if (molfile != "") {
+    await ketcher.setMolecule(molfile);
+    await ketcher.layout();
+  }
+
+  const log = [];
+  if (molfileResult.log != "") {
+    log.push(molfileResult.log);
+  }
+  writeResult(log.join("\n"), logTextElementId);
+}
+
 /*
  * Ketcher
  */
-function getKetcher() {
-  return document.getElementById("ketcher").contentWindow.ketcher;
+function getKetcher(iframeId) {
+  return document.getElementById(iframeId).contentWindow.ketcher;
 }
 
-function onKetcherLoaded() {
-  const ketcher = getKetcher();
+function onKetcherLoaded(iframeId, updateFunction) {
+  const ketcher = getKetcher(iframeId);
 
   // Chrome fires the onload event too early, so we have to wait until 'ketcher' exists.
   if (ketcher) {
-    ketcher.editor.subscribe("change", () => updateTab1());
+    ketcher.editor.subscribe("change", updateFunction);
   } else {
-    setTimeout(() => onKetcherLoaded(), 0);
+    setTimeout(() => onKetcherLoaded(iframeId, updateFunction), 0);
   }
 }
 
