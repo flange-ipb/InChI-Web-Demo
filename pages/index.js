@@ -124,6 +124,10 @@ async function molfileFromInchi(inchi, options, inchiVersion) {
  * Update actions (when user changes inputs)
  */
 async function updateTab1() {
+  // clear output fields
+  writeResult("", "tab1-inchi", "tab1-inchikey", "tab1-auxinfo", "tab1-logs");
+
+  // collect user input
   const molfile = await getKetcher("tab1-ketcher").getMolfile();
   const options = collectOptions("tab1-options");
   const inchiVersion = document.getElementById("tab1-inchiversion").value;
@@ -132,6 +136,10 @@ async function updateTab1() {
 }
 
 async function updateTab2() {
+  // clear output fields
+  writeResult("", "tab2-inchi", "tab2-inchikey", "tab2-auxinfo", "tab2-logs");
+
+  // collect user input
   const molfile = document.getElementById("tab2-molfileTextarea").value;
   const options = collectOptions("tab2-options");
   const inchiVersion = document.getElementById("tab2-inchiversion").value;
@@ -140,11 +148,6 @@ async function updateTab2() {
 }
 
 async function convertMolfileToInchiAndWriteResults(molfile, options, inchiVersion, inchiTextElementId, inchikeyTextElementId, auxinfoTextElementId, logTextElementId) {
-  writeResult("", inchiTextElementId);
-  writeResult("", inchikeyTextElementId);
-  writeResult("", auxinfoTextElementId);
-  writeResult("", logTextElementId);
-
   let inchiResult;
   try {
     inchiResult = await inchiFromMolfile(molfile, options, inchiVersion);
@@ -186,8 +189,10 @@ function collectOptions(tabOptionsId) {
   return Array.from(elements).filter(e => e.checked).map(e => "-" + e.value).join(" ");
 }
 
-function writeResult(text, id) {
-  document.getElementById(id).innerHTML = text;
+function writeResult(text, ...ids) {
+  for (let id of ids) {
+    document.getElementById(id).innerHTML = text;
+  }
 }
 
 async function updateTab3() {
