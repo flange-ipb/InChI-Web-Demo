@@ -128,7 +128,14 @@ async function updateTab1() {
   writeResult("", "tab1-inchi", "tab1-inchikey", "tab1-auxinfo", "tab1-logs");
 
   // collect user input
-  const molfile = await getKetcher("tab1-ketcher").getMolfile();
+  let molfile;
+  const ketcher = getKetcher("tab1-ketcher");
+  if (ketcher.containsReaction()) {
+    writeResult("Cannot convert reactions to InChI", "tab1-logs");
+    return;
+  } else {
+    molfile = await ketcher.getMolfile();
+  }
   const options = collectOptions("tab1-options");
   const inchiVersion = document.getElementById("tab1-inchiversion").value;
 
