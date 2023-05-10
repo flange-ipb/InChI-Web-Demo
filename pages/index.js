@@ -272,7 +272,7 @@ async function onMolfileTextareaDrop(event) {
     return;
   }
 
-  document.getElementById("molfileTextarea").value = content;
+  document.getElementById("tab2-molfileTextarea").value = content;
   await updateTab2();
 }
 
